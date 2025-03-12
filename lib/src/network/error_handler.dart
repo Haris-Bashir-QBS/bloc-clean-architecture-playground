@@ -19,7 +19,10 @@ class ApiErrorHandler {
           response: error.response,
         );
       default:
-        return UnknownException(error.requestOptions);
+        return UnknownException(
+          requestOptions: error.requestOptions,
+          message: _extractErrorMessage(error),
+        );
     }
   }
 }

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/weather_entity.dart';
 import '../bloc/weather_bloc.dart';
 import '../bloc/weather_event.dart';
 import '../bloc/weather_state.dart';
-import '../widgets/additional_info_item.dart';
-import '../widgets/weather_card.dart';
+import '../widgets/weather_display_widget.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -15,9 +13,10 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  final cityTextEditingController = TextEditingController();
   @override
   void initState() {
-    getWeatherDetails();
+    //getWeatherDetails();
     super.initState();
   }
 
@@ -43,68 +42,44 @@ class _WeatherScreenState extends State<WeatherScreen> {
           ),
         ],
       ),
-      body: BlocBuilder<WeatherBloc, WeatherState>(
-        builder: (context, state) {
-          if (state is WeatherLoading) {
-            return const Center(child: CircularProgressIndicator.adaptive());
-          } else if (state is WeatherLoaded) {
-            return WeatherDisplay(weather: state.weather);
-          } else if (state is WeatherError) {
-            return Center(child: Text(state.message));
-          }
-          return const SizedBox.shrink();
-        },
+      body: Column(
+        children: [
+          _searchField(),
+          SizedBox(height: 20),
+          Expanded(
+            child: BlocBuilder<WeatherBloc, WeatherState>(
+              builder: (context, state) {
+                if (state is WeatherLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                } else if (state is WeatherLoaded) {
+                  return WeatherDisplay(
+                    weather: state.weather,
+                    city: cityTextEditingController.text.trim(),
+                  );
+                } else if (state is WeatherError) {
+                  return Center(child: Text(state.message));
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
-}
 
-class WeatherDisplay extends StatelessWidget {
-  final WeatherEntity weather;
-
-  const WeatherDisplay({super.key, required this.weather});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Main Weather Card
-          SizedBox(
-            width: double.infinity,
-            child: WeatherCard(weather: weather),
-          ),
-          const SizedBox(height: 20),
-
-          // Additional Information
-          const Text(
-            'Additional Information',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              AdditionalInfoItem(
-                icon: Icons.water_drop,
-                label: 'Humidity',
-                value: weather.humidity.toString(),
-              ),
-              AdditionalInfoItem(
-                icon: Icons.air,
-                label: 'Wind Speed',
-                value: weather.windSpeed.toString(),
-              ),
-              AdditionalInfoItem(
-                icon: Icons.beach_access,
-                label: 'Pressure',
-                value: weather.pressure.toString(),
-              ),
-            ],
-          ),
-        ],
+  TextField _searchField() {
+    return TextField(
+      controller: cityTextEditingController,
+      onChanged: (value) {
+        context.read<WeatherBloc>().add(FetchWeatherEvent(value));
+      },
+      decoration: InputDecoration(
+        hintText: "Enter city name",
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        prefixIcon: const Icon(Icons.search),
       ),
     );
   }

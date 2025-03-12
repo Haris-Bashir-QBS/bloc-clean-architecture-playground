@@ -26,8 +26,7 @@ class NewsRepositoryImpl implements NewsRepository {
     } on DioException catch (e) {
       return left(ApiErrorHandler.handleError(e));
     } catch (e) {
-      log("Hereeeeeee $e");
-      return left(UnknownException(RequestOptions(path: "/user")));
+      return left(UnknownException());
     }
   }
 }

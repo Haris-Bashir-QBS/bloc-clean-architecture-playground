@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 
-
 /// Base API Exception extending DioException
 class Failure extends DioException {
   @override
@@ -21,8 +20,8 @@ class Failure extends DioException {
 /// **Server Errors (5xx)**
 class ServerException extends Failure {
   ServerException({
-       int? statusCode,
-      required super.message,
+    int? statusCode,
+    required super.message,
     required super.requestOptions,
     super.response,
   }) : super(type: DioExceptionType.badResponse);
@@ -30,76 +29,94 @@ class ServerException extends Failure {
 
 /// **Client Errors (4xx)**
 class BadRequestException extends Failure {
-  BadRequestException(int? statusCode, String message, RequestOptions requestOptions)
-      : super(
-    message: "Bad Request ($statusCode): $message",
-    requestOptions: requestOptions,
-    type: DioExceptionType.badResponse,
-  );
+  BadRequestException(
+    int? statusCode,
+    String message,
+    RequestOptions requestOptions,
+  ) : super(
+        message: "Bad Request ($statusCode): $message",
+        requestOptions: requestOptions,
+        type: DioExceptionType.badResponse,
+      );
 }
 
 class UnauthorisedException extends Failure {
-  UnauthorisedException(int? statusCode, String message, RequestOptions requestOptions)
-      : super(
-    message: "Unauthorized ($statusCode): $message",
-    requestOptions: requestOptions,
-    type: DioExceptionType.badResponse,
-  );
+  UnauthorisedException(
+    int? statusCode,
+    String message,
+    RequestOptions requestOptions,
+  ) : super(
+        message: "Unauthorized ($statusCode): $message",
+        requestOptions: requestOptions,
+        type: DioExceptionType.badResponse,
+      );
 }
 
 class ForbiddenException extends Failure {
-  ForbiddenException(int? statusCode, String message, RequestOptions requestOptions)
-      : super(
-    message: "Forbidden ($statusCode): $message",
-    requestOptions: requestOptions,
-    type: DioExceptionType.badResponse,
-  );
+  ForbiddenException(
+    int? statusCode,
+    String message,
+    RequestOptions requestOptions,
+  ) : super(
+        message: "Forbidden ($statusCode): $message",
+        requestOptions: requestOptions,
+        type: DioExceptionType.badResponse,
+      );
 }
 
 class NotFoundRequestException extends Failure {
-  NotFoundRequestException(int? statusCode, String message, RequestOptions requestOptions)
-      : super(
-    message: "Not Found ($statusCode): $message",
-    requestOptions: requestOptions,
-    type: DioExceptionType.badResponse,
-  );
+  NotFoundRequestException(
+    int? statusCode,
+    String message,
+    RequestOptions requestOptions,
+  ) : super(
+        message: "Not Found ($statusCode): $message",
+        requestOptions: requestOptions,
+        type: DioExceptionType.badResponse,
+      );
 }
 
 /// **Timeout & Network Issues**
 class NetworkException extends Failure {
   NetworkException(RequestOptions requestOptions)
-      : super(
-    message: "No Internet Connection.",
-    requestOptions: requestOptions,
-    type: DioExceptionType.connectionTimeout,
-  );
+    : super(
+        message: "No Internet Connection.",
+        requestOptions: requestOptions,
+        type: DioExceptionType.connectionTimeout,
+      );
 }
 
 class RequestTimeOutException extends Failure {
-  RequestTimeOutException(int? statusCode, String message, RequestOptions requestOptions)
-      : super(
-    message: "Request Timeout ($statusCode): $message",
-    requestOptions: requestOptions,
-    type: DioExceptionType.sendTimeout,
-  );
+  RequestTimeOutException(
+    int? statusCode,
+    String message,
+    RequestOptions requestOptions,
+  ) : super(
+        message: "Request Timeout ($statusCode): $message",
+        requestOptions: requestOptions,
+        type: DioExceptionType.sendTimeout,
+      );
 }
 
 /// **Unprocessable Content (422)**
 class UnprocessableContent extends Failure {
-  UnprocessableContent(int? statusCode, String message, RequestOptions requestOptions)
-      : super(
-    message: "Unprocessable Entity ($statusCode): $message",
-    requestOptions: requestOptions,
-    type: DioExceptionType.badResponse,
-  );
+  UnprocessableContent(
+    int? statusCode,
+    String message,
+    RequestOptions requestOptions,
+  ) : super(
+        message: "Unprocessable Entity ($statusCode): $message",
+        requestOptions: requestOptions,
+        type: DioExceptionType.badResponse,
+      );
 }
 
 /// **Unknown Error**
 class UnknownException extends Failure {
-  UnknownException(RequestOptions requestOptions)
-      : super(
-    message: "Something went wrong.",
-    requestOptions: requestOptions,
-    type: DioExceptionType.unknown,
-  );
+  UnknownException({RequestOptions? requestOptions, String? message})
+    : super(
+        message: message ?? "Something went wrong.",
+        requestOptions: requestOptions ?? RequestOptions(),
+        type: DioExceptionType.unknown,
+      );
 }
