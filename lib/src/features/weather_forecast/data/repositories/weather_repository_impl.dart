@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc_api_integration/src/features/weather_forecast/domain/entities/weather_entity.dart';
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
@@ -19,12 +17,10 @@ class WeatherRepositoryImpl implements WeatherRepository {
     try {
       final WeatherModel data = await remoteDataSource.getWeather(cityName);
       return Right(data);
+    } on DioException catch (dioError) {
+      return Left(ApiErrorHandler.handleError(dioError));
     } catch (error) {
-      if (error is DioException) {
-        return Left(ApiErrorHandler.handleError(error));
-      } else {
-        return Left(UnknownException());
-      }
+      return Left(UnknownException());
     }
   }
 }
