@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:bloc_api_integration/src/core/transformers/debounce_transformer.dart';
+import 'package:bloc_api_integration/src/core/common/transformers/debounce_transformer.dart';
 import 'package:bloc_api_integration/src/features/weather_forecast/domain/usecases/get_weather_usecase.dart';
 import 'package:bloc_api_integration/src/features/weather_forecast/presentation/bloc/weather_event.dart';
 import 'package:bloc_api_integration/src/features/weather_forecast/presentation/bloc/weather_state.dart';

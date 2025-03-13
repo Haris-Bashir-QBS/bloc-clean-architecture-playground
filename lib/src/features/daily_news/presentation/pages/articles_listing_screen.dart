@@ -1,12 +1,10 @@
 import 'dart:async';
 
-import 'package:bloc_api_integration/src/config/constants/app_texts.dart';
 import 'package:bloc_api_integration/src/features/daily_news/presentation/bloc/news_article_bloc.dart';
 import 'package:bloc_api_integration/src/features/daily_news/presentation/bloc/news_article_state.dart';
 import 'package:bloc_api_integration/src/features/daily_news/presentation/widgets/custom_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../domain/entities/article_entity.dart';
 import '../bloc/news_article_event.dart';
@@ -49,33 +47,28 @@ class _ArticlesListingScreenState extends State<ArticlesListingScreen> {
   BlocBuilder<NewsArticleBloc, NewsArticleState> _buildBody() {
     return BlocBuilder<NewsArticleBloc, NewsArticleState>(
       builder: (context, state) {
-        if (state is NewsArticlesLoading) {
-          return Center(child: CircularProgressIndicator());
-          // return _shimmerLoadingList();
-        }
-        if (state is NewsArticlesError) {
-          return Center(child: Text("Error: ${state.error?.message}"));
-        } else if (state is NewsArticlesLoaded) {
-          if (state.articles?.isEmpty == true) {
-            return Text(AppTexts.noArticlesFound);
-          }
-          return _newsListView(state);
-        }
-        return SizedBox();
+        return switch (state) {
+          NewsArticlesLoading() => Center(child: CircularProgressIndicator()),
+          NewsArticlesError() => Center(child: Text("${state.error?.message}")),
+          NewsArticlesLoaded(articles: final articles) => _newsListView(
+            articles,
+          ),
+          _ => const SizedBox.shrink(),
+        };
       },
     );
   }
 
-  Widget _newsListView(NewsArticlesLoaded state) {
+  Widget _newsListView(List<ArticleEntity>? articles) {
     return Expanded(
       child: RefreshIndicator(
         onRefresh: fetchArticles,
         child: ListView.separated(
-          itemCount: state.articles?.length ?? 0,
+          itemCount: articles?.length ?? 0,
           shrinkWrap: true,
           physics: AlwaysScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            ArticleEntity? article = state.articles?[index];
+            ArticleEntity? article = articles?[index];
             return CustomListTile(
               imageUrl: article?.urlToImage ?? "",
               title: article?.title ?? "",

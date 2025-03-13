@@ -46,31 +46,35 @@ class _WeatherScreenState extends State<WeatherScreen> {
         children: [
           _searchField(),
           SizedBox(height: 20),
-          Expanded(
-            child: BlocBuilder<WeatherBloc, WeatherState>(
-              builder: (context, state) {
-                if (state is WeatherLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  );
-                } else if (state is WeatherLoaded) {
-                  return WeatherDisplay(
-                    weather: state.weather,
-                    city: cityTextEditingController.text.trim(),
-                  );
-                } else if (state is WeatherError) {
-                  return Center(child: Text(state.message));
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-          ),
+          _weatherDetailsWidget(),
         ],
       ),
     );
   }
 
-  TextField _searchField() {
+  Widget _weatherDetailsWidget() {
+    return Expanded(
+      child: BlocBuilder<WeatherBloc, WeatherState>(
+        builder: (context, state) {
+          return switch (state) {
+            WeatherLoading() => const Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
+            WeatherLoaded(weather: final weather) => WeatherDisplay(
+              weather: weather,
+              city: cityTextEditingController.text.trim(),
+            ),
+            WeatherError(message: final message) => Center(
+              child: Text(message),
+            ),
+            _ => const SizedBox.shrink(),
+          };
+        },
+      ),
+    );
+  }
+
+  Widget _searchField() {
     return TextField(
       controller: cityTextEditingController,
       onChanged: (value) {
