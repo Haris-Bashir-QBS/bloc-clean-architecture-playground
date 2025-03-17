@@ -58,7 +58,7 @@ class UsersListScreenState extends State<UsersListScreen> {
     );
   }
 
-  Widget _usersListView(List<UserEntity>? users) {
+  Widget _usersListView(List<UserProfileEntity>? users) {
     return RefreshIndicator(
       //  onRefresh: fetchUsers,
       onRefresh: () async {
@@ -85,7 +85,10 @@ class UsersListScreenState extends State<UsersListScreen> {
     );
   }
 
-  void _navigateToProfileDetailsScreen(BuildContext context, UserEntity? user) {
+  void _navigateToProfileDetailsScreen(
+    BuildContext context,
+    UserProfileEntity? user,
+  ) {
     //     Navigator.push(
     //   context,
     //   MaterialPageRoute(builder: (_) => UserProfileScreen(userId: user.id)),

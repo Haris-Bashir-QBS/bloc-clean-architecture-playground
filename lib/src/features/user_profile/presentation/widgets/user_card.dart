@@ -2,7 +2,7 @@ import 'package:bloc_api_integration/src/features/user_profile/domain/entities/u
 import 'package:flutter/material.dart';
 
 class UserCard extends StatelessWidget {
-  final UserEntity user;
+  final UserProfileEntity user;
 
   const UserCard({super.key, required this.user});
 

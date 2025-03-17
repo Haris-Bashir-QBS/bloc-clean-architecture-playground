@@ -79,7 +79,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     final result = await getUserProfileUseCase(event.userId);
     result.fold(
       (Failure failure) => emit(UserError(failure.message)),
-      (UserEntity user) => emit(UserLoaded(user)),
+      (UserProfileEntity user) => emit(UserLoaded(user)),
     );
   }
 }

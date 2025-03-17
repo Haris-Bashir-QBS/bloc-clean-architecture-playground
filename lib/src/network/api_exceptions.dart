@@ -7,11 +7,14 @@ class Failure extends DioException {
 
   Failure({
     required this.message,
-    required super.requestOptions,
+    RequestOptions? requestOptions,
     super.response,
     super.error,
     super.type,
-  });
+  }) : super(
+         message: message,
+         requestOptions: requestOptions ?? RequestOptions(),
+       );
 
   @override
   String toString() => message;
@@ -22,9 +25,12 @@ class ServerException extends Failure {
   ServerException({
     int? statusCode,
     required super.message,
-    required super.requestOptions,
+    RequestOptions? requestOptions,
     super.response,
-  }) : super(type: DioExceptionType.badResponse);
+  }) : super(
+         type: DioExceptionType.badResponse,
+         requestOptions: requestOptions ?? RequestOptions(),
+       );
 }
 
 /// **Client Errors (4xx)**

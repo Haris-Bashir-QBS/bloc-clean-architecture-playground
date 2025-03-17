@@ -17,14 +17,14 @@ class UserLoading extends UserState {}
 
 /// Success state when user profile is loaded
 class UserLoaded extends UserState {
-  final UserEntity user;
+  final UserProfileEntity user;
 
   const UserLoaded(this.user);
 
   @override
   List<Object> get props => [user];
 
-  UserLoaded copyWith({UserEntity? user}) {
+  UserLoaded copyWith({UserProfileEntity? user}) {
     return UserLoaded(user ?? this.user);
   }
 }
@@ -38,21 +38,23 @@ class UserListingLoaded extends UserState {
   List<Object> get props => [userListing];
 
   UserListingLoaded copyWith({
-    List<UserEntity>? users,
-    int? page,   int? perPage,   int? total,   int? totalPages,
+    List<UserProfileEntity>? users,
+    int? page,
+    int? perPage,
+    int? total,
+    int? totalPages,
   }) {
     return UserListingLoaded(
       userListing: UserListingEntity(
         users: users ?? userListing.users,
         page: page ?? userListing.page,
-        perPage: perPage??userListing.perPage,
-        total: total??userListing.total,
+        perPage: perPage ?? userListing.perPage,
+        total: total ?? userListing.total,
         totalPages: totalPages ?? userListing.totalPages,
       ),
     );
   }
 }
-
 
 /// Error state when fetching user profile fails
 class UserError extends UserState {

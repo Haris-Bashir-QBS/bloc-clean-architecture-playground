@@ -33,7 +33,7 @@ class UserProfileView extends StatelessWidget {
   }
 
   /// Widget for displaying the user's profile details
-  Widget _buildUserProfile(UserEntity user) {
+  Widget _buildUserProfile(UserProfileEntity user) {
     return Center(
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -44,10 +44,22 @@ class UserProfileView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircleAvatar(radius: 50, backgroundImage: NetworkImage(user.avatar)),
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: NetworkImage(user.avatar),
+              ),
               const SizedBox(height: 12),
-              Text(user.firstName + user.lastName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Text(user.email, style: const TextStyle(fontSize: 16, color: Colors.grey)),
+              Text(
+                user.firstName + user.lastName,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                user.email,
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
+              ),
             ],
           ),
         ),
@@ -61,10 +73,15 @@ class UserProfileView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Error: $message", style: const TextStyle(color: Colors.red, fontSize: 18)),
+          Text(
+            "Error: $message",
+            style: const TextStyle(color: Colors.red, fontSize: 18),
+          ),
           const SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () => context.read<UserBloc>().add(FetchUserProfileEvent(userId)),
+            onPressed:
+                () =>
+                    context.read<UserBloc>().add(FetchUserProfileEvent(userId)),
             child: const Text("Retry"),
           ),
         ],

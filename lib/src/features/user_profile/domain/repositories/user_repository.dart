@@ -7,6 +7,6 @@ import '../entities/user_listing.dart';
 /// Abstract class defining methods that the repository must implement
 
 abstract class UserRepository {
-  Future<Either<Failure, UserEntity>> fetchUser(String id);
+  Future<Either<Failure, UserProfileEntity>> fetchUser(String id);
   Future<Either<Failure, UserListingEntity>> fetchUsers(int page);
 }
