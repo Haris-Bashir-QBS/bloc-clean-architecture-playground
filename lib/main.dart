@@ -4,6 +4,7 @@ import 'package:bloc_api_integration/src/core/observers/app_bloc_observer.dart';
 import 'package:bloc_api_integration/src/core/router/app_router.dart';
 import 'package:bloc_api_integration/src/core/theme/theme.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bloc_api_integration/src/features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:bloc_api_integration/src/features/daily_news/presentation/bloc/news_article_bloc.dart';
 import 'package:bloc_api_integration/src/features/user_profile/presentation/bloc/user_bloc.dart';
 import 'package:bloc_api_integration/src/features/weather_forecast/presentation/bloc/weather_bloc.dart';
@@ -22,6 +23,7 @@ void main() async {
         BlocProvider(create: (_) => sl<WeatherBloc>()),
         BlocProvider(create: (_) => sl<AuthBloc>()),
         BlocProvider(create: (_) => sl<AppUserCubit>()),
+        BlocProvider(create: (_) => BlogBloc()),
       ],
       child: const MyApp(),
     ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/router/app_routes.dart' show AppRoutes;
 
@@ -20,6 +19,12 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Center(child: Text("Welcome to Home!")),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.pushNamed(AppRoutes.addNewBlog);
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }

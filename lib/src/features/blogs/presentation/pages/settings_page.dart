@@ -1,12 +1,12 @@
 import 'package:bloc_api_integration/src/core/router/app_routes.dart';
+import 'package:bloc_api_integration/src/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../core/common/cubits/app_user_cubit.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart' show AuthSignOutEvent;
 import '../../../auth/presentation/bloc/auth_state.dart';
+import '../widgets/dialog.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -17,6 +17,7 @@ class SettingsPage extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthSignedOut) {
           context.pop();
+          showSnackBar(context, content: "Sign Out Successfully");
           context.goNamed(AppRoutes.signIn);
         }
       },
@@ -33,26 +34,13 @@ class SettingsPage extends StatelessWidget {
   }
 
   void _showLogoutDialog(BuildContext context) {
-    showDialog(
+    showConfirmationDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Confirm Logout"),
-          content: Text("Are you sure you want to logout?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // Close dialog
-              child: Text("No"),
-            ),
-            TextButton(
-              onPressed: () {
-                context.read<AuthBloc>().add(AuthSignOutEvent());
-              },
-              child: Text("Yes"),
-            ),
-          ],
-        );
-      },
+      title: "Confirm Logout",
+      content: "Are you sure you want to logout?",
+      confirmText: "Yes",
+      cancelText: "No",
+      onConfirm: () => context.read<AuthBloc>().add(AuthSignOutEvent()),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:bloc_api_integration/src/core/presentation/splash/splash_page.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/pages/login_page.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/pages/signup_page.dart';
+import 'package:bloc_api_integration/src/features/blogs/presentation/pages/add_new_blog.dart';
 import 'package:bloc_api_integration/src/features/blogs/presentation/pages/home_page.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/blogs/presentation/pages/settings_page.dart';
@@ -33,6 +34,11 @@ final GoRouter appRouter = GoRouter(
       path: '/settings',
       name: AppRoutes.settings,
       builder: (context, state) => const SettingsPage(),
+    ),
+    GoRoute(
+      path: '/add_new_blog',
+      name: AppRoutes.addNewBlog,
+      builder: (context, state) => const AddNewBlogPage(),
     ),
   ],
 );

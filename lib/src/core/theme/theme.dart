@@ -16,6 +16,10 @@ class AppTheme {
       elevation: 0,
       centerTitle: true,
     ),
+    chipTheme: const ChipThemeData(
+      color: WidgetStatePropertyAll(AppPallete.backgroundColor),
+      side: BorderSide.none,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       enabledBorder: _border(),
       focusedBorder: _border(AppPallete.gradient2),
