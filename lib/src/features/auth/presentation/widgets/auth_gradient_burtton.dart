@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 class AuthGradientButton extends StatelessWidget {
   final String buttonText;
   final VoidCallback onPressed;
+  final bool? showLoader;
   const AuthGradientButton({
     super.key,
     required this.buttonText,
     required this.onPressed,
+    this.showLoader,
   });
 
   @override
@@ -32,10 +34,16 @@ class AuthGradientButton extends StatelessWidget {
           backgroundColor: AppPallete.transparentColor,
           shadowColor: AppPallete.transparentColor,
         ),
-        child: Text(
-          buttonText,
-          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-        ),
+        child:
+            showLoader == true
+                ? Center(child: CircularProgressIndicator())
+                : Text(
+                  buttonText,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
       ),
     );
   }

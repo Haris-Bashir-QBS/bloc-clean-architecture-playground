@@ -6,15 +6,25 @@ class UserModel extends UserEntity {
 
   /// Convert JSON to UserModel
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final userMetadata = json['user_metadata'] as Map<String, dynamic>?;
     return UserModel(
       id: json['id'] as String,
-      email: json['email'] as String,
-      name: json['name'] as String,
+      email:
+          userMetadata?['email'] as String? ?? json['email'] as String? ?? '',
+      name: userMetadata?['name'] as String? ?? '',
     );
   }
 
   /// Convert UserModel to JSON
   Map<String, dynamic> toJson() {
     return {'id': id, 'email': email, 'name': name};
+  }
+
+  UserModel copyWith({String? email, String? id, String? name}) {
+    return UserModel(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      name: name ?? this.name,
+    );
   }
 }

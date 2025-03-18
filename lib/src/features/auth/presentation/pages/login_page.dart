@@ -1,8 +1,13 @@
 import 'package:bloc_api_integration/src/core/router/app_routes.dart';
+import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_event.dart';
+import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/widgets/auth_field.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/widgets/auth_gradient_burtton.dart';
+import 'package:bloc_api_integration/src/widgets/snackbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_palette.dart';
@@ -26,22 +31,33 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _signInText(),
-              const SizedBox(height: 30),
-              emailTextField(),
-              const SizedBox(height: 15),
-              _passwordTextField(),
-              const SizedBox(height: 20),
-              _signInButton(),
-              const SizedBox(height: 20),
-              signupNavigationText(),
-            ],
-          ),
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthSuccess) {
+              context.goNamed(AppRoutes.home);
+            } else if (state is AuthFailure) {
+              showSnackBar(context, content: state.message);
+            }
+          },
+          builder: (context, state) {
+            return Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _signInText(),
+                  const SizedBox(height: 30),
+                  emailTextField(),
+                  const SizedBox(height: 15),
+                  _passwordTextField(),
+                  const SizedBox(height: 20),
+                  _signInButton(state),
+                  const SizedBox(height: 20),
+                  signupNavigationText(),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
@@ -70,11 +86,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  AuthGradientButton _signInButton() {
+  Widget _signInButton(AuthState state) {
     return AuthGradientButton(
       buttonText: 'Sign in',
+      showLoader: state is AuthLoading,
       onPressed: () {
-        if (formKey.currentState!.validate()) {}
+        if (formKey.currentState!.validate()) {
+          context.read<AuthBloc>().add(
+            AuthSignInEvent(
+              email: emailController.text.trim(),
+              password: passwordController.text.trim(),
+            ),
+          );
+        }
       },
     );
   }

@@ -2,12 +2,15 @@ import 'package:bloc_api_integration/src/core/router/app_routes.dart';
 import 'package:bloc_api_integration/src/core/theme/app_palette.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_event.dart';
+import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/widgets/auth_field.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/widgets/auth_gradient_burtton.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../../widgets/snackbar.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -31,50 +34,64 @@ class _SignupPageState extends State<SignupPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15),
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(height: 80),
-                _signupText(),
-                SizedBox(height: 30),
-                _nameTextField(),
-                SizedBox(height: 15),
-                _emailTextField(),
-                SizedBox(height: 15),
-                _passwordController(),
-                SizedBox(height: 15),
-                _confirmPasswordController(),
-                SizedBox(height: 15),
-                _signupButton(),
-                SizedBox(height: 15),
-                _signInText(),
-                SizedBox(height: 15),
-              ],
-            ),
+          child: BlocConsumer<AuthBloc, AuthState>(
+            listener: (BuildContext context, AuthState state) {
+              if (state is AuthFailure) {
+                showSnackBar(context, content: state.message);
+              }
+            },
+            builder: (BuildContext context, AuthState state) {
+              return Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(height: 80),
+                    _signupText(),
+                    SizedBox(height: 30),
+                    _nameTextField(),
+                    SizedBox(height: 15),
+                    _emailTextField(),
+                    SizedBox(height: 15),
+                    _passwordController(),
+                    SizedBox(height: 15),
+                    _confirmPasswordController(),
+                    SizedBox(height: 15),
+                    _signupButton(state),
+                    SizedBox(height: 15),
+                    _signInText(),
+                    SizedBox(height: 15),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget _signupButton() {
+  Widget _signupButton(AuthState state) {
     return AuthGradientButton(
       buttonText: "Sign Up",
+      showLoader: state is AuthLoading,
       onPressed: () {
-        if (formKey.currentState!.validate()) {
-          context.read<AuthBloc>().add(
-            AuthSignUp(
-              name: nameController.text.trim(),
-              email: emailController.text.trim(),
-              password: passwordController.text.trim(),
-            ),
-          );
-        }
+        _onSignUp();
       },
     );
+  }
+
+  void _onSignUp() {
+    if (formKey.currentState!.validate()) {
+      context.read<AuthBloc>().add(
+        AuthSignUpEvent(
+          name: nameController.text.trim(),
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        ),
+      );
+    }
   }
 
   Widget _signInText() {

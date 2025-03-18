@@ -1,4 +1,6 @@
-import 'package:bloc_api_integration/src/core/dependency_injection/service_locator.dart';
+import 'package:bloc_api_integration/src/core/common/cubits/app_user_cubit.dart';
+import 'package:bloc_api_integration/src/core/dependency_injection/barrel.dart';
+import 'package:bloc_api_integration/src/core/observers/app_bloc_observer.dart';
 import 'package:bloc_api_integration/src/core/router/app_router.dart';
 import 'package:bloc_api_integration/src/core/theme/theme.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_bloc.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = AppBlocObserver();
   await initializeDI();
   runApp(
     MultiBlocProvider(
@@ -18,6 +21,7 @@ void main() async {
         BlocProvider(create: (_) => sl<NewsArticleBloc>()),
         BlocProvider(create: (_) => sl<WeatherBloc>()),
         BlocProvider(create: (_) => sl<AuthBloc>()),
+        BlocProvider(create: (_) => sl<AppUserCubit>()),
       ],
       child: const MyApp(),
     ),

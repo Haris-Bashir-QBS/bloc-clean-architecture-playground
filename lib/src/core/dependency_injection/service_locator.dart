@@ -1,33 +1,23 @@
-import 'package:bloc_api_integration/src/core/secrets/app_secrets.dart';
-import 'package:bloc_api_integration/src/features/auth/data/datasources/auth_remote_datasource_impl.dart';
-import 'package:bloc_api_integration/src/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:bloc_api_integration/src/features/auth/domain/repositories/auth_repository.dart';
-import 'package:bloc_api_integration/src/features/auth/domain/usecases/signup_usecase.dart';
-import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:bloc_api_integration/src/features/daily_news/data/datasources/remote/news_remote_datasource.dart';
-import 'package:bloc_api_integration/src/features/daily_news/domain/usecases/fetch_articles_usecase.dart';
-import 'package:bloc_api_integration/src/features/user_profile/domain/repositories/user_repository.dart';
-import 'package:bloc_api_integration/src/features/weather_forecast/data/datasources/remote/weather_remote_datasource_impl.dart';
-import 'package:bloc_api_integration/src/features/weather_forecast/domain/usecases/get_weather_usecase.dart';
-import 'package:get_it/get_it.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../features/auth/data/datasources/auth_remote_datasource.dart';
-import '../../features/daily_news/data/repositories/article_repository_impl.dart';
-import '../../features/daily_news/domain/repositories/article_repository.dart';
-import '../../features/daily_news/presentation/bloc/news_article_bloc.dart';
-import '../../features/user_profile/data/datasources/user_remote_data_source.dart';
-import '../../features/user_profile/data/repositories/users_repository_impl.dart';
-import '../../features/user_profile/domain/usecases/fetch_users_usecase.dart';
-import '../../features/user_profile/domain/usecases/get_user_profile_usecase.dart';
-import '../../features/user_profile/presentation/bloc/user_bloc.dart';
-import '../../features/weather_forecast/data/datasources/remote/weather_remote_datasource.dart';
-import '../../features/weather_forecast/data/repositories/weather_repository_impl.dart';
-import '../../features/weather_forecast/domain/repositories/weather_repository.dart';
-import '../../features/weather_forecast/presentation/bloc/weather_bloc.dart';
+part of 'barrel.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDI() async {
+  ///  core
+  sl.registerLazySingleton(() => AppUserCubit());
+
+  _initUser();
+
+  /// ============================================= Daily News DI =================================
+  /// Registering Remote Data Sources
+  _initWeather();
+
+  ///==================================== Auth DI ====================================
+
+  await _initAuth();
+}
+
+void _initUser() {
   // sl.registerLazySingleton<UserRemoteDataSource>(
   //   () => UserRemoteDataSourceImpl(),
   // );
@@ -43,8 +33,9 @@ Future<void> initializeDI() async {
   sl.registerFactory(
     () => UserBloc(sl<FetchUserProfileUseCase>(), sl<FetchUsersUseCase>()),
   );
+}
 
-  /// ============================================= Daily News DI =================================
+void _initWeather() {
   /// Registering Remote Data Sources
   sl.registerLazySingleton<NewsRemoteDatasource>(
     () => NewsRemoteDatasourceImpl(),
@@ -69,9 +60,9 @@ Future<void> initializeDI() async {
     )
     ..registerLazySingleton(() => GetWeatherUseCase(sl()))
     ..registerFactory(() => WeatherBloc(sl()));
+}
 
-  ///==================================== Auth DI ====================================
-
+Future<void> _initAuth() async {
   final supabase = await Supabase.initialize(
     url: AppSecrets.supabaseUrl,
     anonKey: AppSecrets.supabaseAnonKey,
@@ -86,5 +77,16 @@ Future<void> initializeDI() async {
       () => AuthRepositoryImpl(remoteDataSource: sl()),
     )
     ..registerLazySingleton(() => SignUpUseCase(sl()))
-    ..registerFactory(() => AuthBloc(signUpUseCase: sl<SignUpUseCase>()));
+    ..registerLazySingleton(() => SignInUseCase(sl()))
+    ..registerLazySingleton(() => CurrentUserUsecase(sl()))
+    ..registerLazySingleton(() => SignOutUsecase(sl()))
+    ..registerFactory(
+      () => AuthBloc(
+        signUpUseCase: sl<SignUpUseCase>(),
+        signInUseCase: sl<SignInUseCase>(),
+        currentUserUsecase: sl<CurrentUserUsecase>(),
+        authUserCubit: sl<AppUserCubit>(),
+        signOutUsecase: sl<SignOutUsecase>(),
+      ),
+    );
 }
