@@ -1,4 +1,4 @@
-class Blog {
+class BlogEntity {
   final String id;
   final String posterId;
   final String title;
@@ -8,7 +8,7 @@ class Blog {
   final DateTime updatedAt;
   final String? posterName;
 
-  Blog({
+  BlogEntity({
     required this.id,
     required this.posterId,
     required this.title,

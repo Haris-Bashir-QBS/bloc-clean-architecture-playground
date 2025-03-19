@@ -84,10 +84,10 @@ class NotFoundRequestException extends Failure {
 
 /// **Timeout & Network Issues**
 class NetworkException extends Failure {
-  NetworkException(RequestOptions requestOptions)
+  NetworkException({RequestOptions? requestOptions})
     : super(
         message: "No Internet Connection.",
-        requestOptions: requestOptions,
+        requestOptions: requestOptions ?? RequestOptions(),
         type: DioExceptionType.connectionTimeout,
       );
 }

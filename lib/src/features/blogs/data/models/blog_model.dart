@@ -1,6 +1,6 @@
 import '../../domain/entities/blog_entity.dart';
 
-class BlogModel extends Blog {
+class BlogModel extends BlogEntity {
   BlogModel({
     required super.id,
     required super.posterId,
@@ -27,7 +27,7 @@ class BlogModel extends Blog {
   factory BlogModel.fromJson(Map<String, dynamic> map) {
     return BlogModel(
       id: map['id'] as String,
-      posterId: map['poster_id'] as String,
+      posterId: map['user_id'] as String,
       title: map['title'] as String,
       content: map['content'] as String,
       imageUrl: map['image_url'] as String,

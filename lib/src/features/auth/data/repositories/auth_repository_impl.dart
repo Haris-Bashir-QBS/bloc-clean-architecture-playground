@@ -3,6 +3,7 @@ import 'package:bloc_api_integration/src/features/auth/data/models/user_model.da
 import 'package:bloc_api_integration/src/features/auth/domain/entities/user_entity.dart';
 import 'package:bloc_api_integration/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:bloc_api_integration/src/network/api_exceptions.dart';
+import 'package:bloc_api_integration/src/services/connectivity_service.dart';
 import 'package:fpdart/fpdart.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -13,10 +14,26 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> currentUser() async {
     try {
-      final UserModel? user = await remoteDataSource.getCurrentUserData();
-      if (user == null) {
-        return left(Failure(message: "User not logged in."));
+      if (!await (ConnectivityService.isConnected)) {
+        final session = remoteDataSource.currentUserSession;
+
+        if (session == null) {
+          return left(Failure(message: 'User not logged in!'));
+        }
+
+        return right(
+          UserModel(
+            id: session.user.id,
+            email: session.user.email ?? '',
+            name: '',
+          ),
+        );
       }
+      final user = await remoteDataSource.getCurrentUserData();
+      if (user == null) {
+        return left(Failure(message: 'User not logged in!'));
+      }
+
       return right(user);
     } on ServerException catch (e) {
       return left(Failure(message: e.message));
@@ -66,20 +83,4 @@ class AuthRepositoryImpl implements AuthRepository {
       return left(Failure(message: e.message));
     }
   }
-
-  /// Generic function for oth signup and sign In
-  // Future<Either<Failure, User>> _getUser(
-  //     Future<User> Function() fn,
-  //     ) async {
-  //   try {
-  //     if (!await (connectionChecker.isConnected)) {
-  //       return left(Failure(Constants.noConnectionErrorMessage));
-  //     }
-  //     final user = await fn();
-  //
-  //     return right(user);
-  //   } on ServerException catch (e) {
-  //     return left(Failure(e.message));
-  //   }
-  // }
 }

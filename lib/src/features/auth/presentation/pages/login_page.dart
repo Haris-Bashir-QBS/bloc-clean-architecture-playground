@@ -3,7 +3,7 @@ import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_bl
 import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/bloc/auth_state.dart';
 import 'package:bloc_api_integration/src/features/auth/presentation/widgets/auth_field.dart';
-import 'package:bloc_api_integration/src/features/auth/presentation/widgets/auth_gradient_burtton.dart';
+import 'package:bloc_api_integration/src/features/auth/presentation/widgets/auth_gradient_button.dart';
 import 'package:bloc_api_integration/src/widgets/snackbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_palette.dart';
 
 class LoginPage extends StatefulWidget {
-  static route() => MaterialPageRoute(builder: (context) => const LoginPage());
-
   const LoginPage({super.key});
 
   @override

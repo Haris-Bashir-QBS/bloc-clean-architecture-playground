@@ -11,7 +11,7 @@ class ApiErrorHandler {
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.connectionError:
-        return NetworkException(error.requestOptions);
+        return NetworkException();
       case DioExceptionType.badResponse:
         return ServerException(
           message: _extractErrorMessage(error),

@@ -5,19 +5,16 @@ final sl = GetIt.instance;
 Future<void> initializeDI() async {
   ///  core
   sl.registerLazySingleton(() => AppUserCubit());
-
-  _initUser();
-
-  /// ============================================= Daily News DI =================================
-  /// Registering Remote Data Sources
-  _initWeather();
-
-  ///==================================== Auth DI ====================================
-
-  await _initAuth();
+  final directory = await getApplicationDocumentsDirectory();
+  Hive.defaultDirectory = directory.path;
+  sl.registerLazySingleton(() => Hive.box(name: 'blogs'));
+  _initUserDependencies();
+  _initWeatherDependencies();
+  await _initAuthDependencies();
+  _initBlog();
 }
 
-void _initUser() {
+void _initUserDependencies() {
   // sl.registerLazySingleton<UserRemoteDataSource>(
   //   () => UserRemoteDataSourceImpl(),
   // );
@@ -27,15 +24,13 @@ void _initUser() {
   // );
 
   sl.registerLazySingleton(() => FetchUserProfileUseCase(sl<UserRepository>()));
-
   sl.registerLazySingleton(() => FetchUsersUseCase(sl<UserRepository>()));
-
   sl.registerFactory(
     () => UserBloc(sl<FetchUserProfileUseCase>(), sl<FetchUsersUseCase>()),
   );
 }
 
-void _initWeather() {
+void _initWeatherDependencies() {
   /// Registering Remote Data Sources
   sl.registerLazySingleton<NewsRemoteDatasource>(
     () => NewsRemoteDatasourceImpl(),
@@ -62,7 +57,7 @@ void _initWeather() {
     ..registerFactory(() => WeatherBloc(sl()));
 }
 
-Future<void> _initAuth() async {
+Future<void> _initAuthDependencies() async {
   final supabase = await Supabase.initialize(
     url: AppSecrets.supabaseUrl,
     anonKey: AppSecrets.supabaseAnonKey,
@@ -87,6 +82,27 @@ Future<void> _initAuth() async {
         currentUserUsecase: sl<CurrentUserUsecase>(),
         authUserCubit: sl<AppUserCubit>(),
         signOutUsecase: sl<SignOutUsecase>(),
+      ),
+    );
+}
+
+Future<void> _initBlog() async {
+  sl
+    ..registerLazySingleton<BlogRemoteDataSource>(
+      () => BlogRemoteDataSourceImpl(supabaseClient: sl<SupabaseClient>()),
+    )
+    ..registerLazySingleton<BlogLocalDataSource>(
+      () => BlogLocalDataSourceImpl(hiveBox: sl<Box>()),
+    )
+    ..registerLazySingleton<BlogRepository>(
+      () => BlogRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()),
+    )
+    ..registerLazySingleton(() => UploadBlogUseCase(sl()))
+    ..registerLazySingleton(() => GetAllBlogsUseCase(sl()))
+    ..registerFactory(
+      () => BlogBloc(
+        uploadBlog: sl<UploadBlogUseCase>(),
+        getAllBlogs: sl<GetAllBlogsUseCase>(),
       ),
     );
 }

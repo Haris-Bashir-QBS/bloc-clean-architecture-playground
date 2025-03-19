@@ -23,7 +23,7 @@ void main() async {
         BlocProvider(create: (_) => sl<WeatherBloc>()),
         BlocProvider(create: (_) => sl<AuthBloc>()),
         BlocProvider(create: (_) => sl<AppUserCubit>()),
-        BlocProvider(create: (_) => BlogBloc()),
+        BlocProvider(create: (_) => sl<BlogBloc>()),
       ],
       child: const MyApp(),
     ),

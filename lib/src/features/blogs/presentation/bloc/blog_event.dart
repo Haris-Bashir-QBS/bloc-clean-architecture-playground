@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bloc_api_integration/src/features/blogs/domain/entities/blog_entity.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class BlogEvent extends Equatable {
@@ -26,4 +27,8 @@ class BlogUploadEvent extends BlogEvent {
 
   @override
   List<Object?> get props => [posterId, title, content, image, topics];
+}
+
+class BlogFetchAllBlogsEvent extends BlogEvent {
+  const BlogFetchAllBlogsEvent();
 }
