@@ -57,4 +57,27 @@ class BlogRemoteDataSourceImpl extends BlogRemoteDataSource {
       throw ServerException(message: e.toString());
     }
   }
+
+  @override
+  Future<void> deleteBlog({required String blogId}) async {
+    try {
+      await supabaseClient.from('blogs').delete().eq('id', blogId);
+    } on PostgrestException catch (e) {
+      throw ServerException(message: e.message);
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<void> updateBlog({required BlogModel blog}) async {
+    try {
+      await supabaseClient
+          .from('blogs')
+          .update(blog.toJson())
+          .eq('id', blog.id);
+    } on PostgrestException catch (e) {
+      throw ServerException(message: e.message);
+    }
+  }
 }

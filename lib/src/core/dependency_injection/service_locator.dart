@@ -99,10 +99,12 @@ Future<void> _initBlog() async {
     )
     ..registerLazySingleton(() => UploadBlogUseCase(sl()))
     ..registerLazySingleton(() => GetAllBlogsUseCase(sl()))
+    ..registerLazySingleton(() => DeleteBlogUsecase(sl()))
     ..registerFactory(
       () => BlogBloc(
         uploadBlog: sl<UploadBlogUseCase>(),
         getAllBlogs: sl<GetAllBlogsUseCase>(),
+        deleteBlog: sl<DeleteBlogUsecase>(),
       ),
     );
 }

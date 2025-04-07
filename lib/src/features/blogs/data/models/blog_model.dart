@@ -15,7 +15,7 @@ class BlogModel extends BlogEntity {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
-      'poster_id': posterId,
+      'user_id': posterId,
       'title': title,
       'content': content,
       'image_url': imageUrl,

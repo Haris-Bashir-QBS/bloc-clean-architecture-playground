@@ -21,23 +21,17 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    fetchAllBlogs();
+  }
+
+  void fetchAllBlogs() {
     context.read<BlogBloc>().add(BlogFetchAllBlogsEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Blog App'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.pushNamed(AppRoutes.addNewBlog);
-            },
-            icon: const Icon(CupertinoIcons.add_circled),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Blog App'), actions: []),
       body: BlocConsumer<BlogBloc, BlogState>(
         listener: (context, state) {
           if (state is BlogFailure) {
@@ -54,22 +48,35 @@ class _HomePageState extends State<HomePage> {
           return const SizedBox();
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppPallete.gradient1,
+        onPressed: () {
+          context.pushNamed(AppRoutes.addNewBlog);
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
   Widget _blogsListView(BlogsFetchSuccess state) {
-    return ListView.builder(
-      itemCount: state.blogs.length,
-      itemBuilder: (context, index) {
-        final blog = state.blogs[index];
-        return BlogCard(
-          blog: blog,
-          color: index % 2 == 0 ? AppPallete.gradient1 : AppPallete.gradient2,
-          onTap: () {
-            context.pushNamed(AppRoutes.blogViewer, extra: blog);
-          },
-        );
+    return RefreshIndicator(
+      onRefresh: () async {
+        fetchAllBlogs();
       },
+      child: ListView.builder(
+        itemCount: state.blogs.length,
+        physics: AlwaysScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          final blog = state.blogs[index];
+          return BlogCard(
+            blog: blog,
+            color: index % 2 == 0 ? AppPallete.gradient1 : AppPallete.gradient2,
+            onTap: () {
+              context.pushNamed(AppRoutes.blogViewer, extra: blog);
+            },
+          );
+        },
+      ),
     );
   }
 }

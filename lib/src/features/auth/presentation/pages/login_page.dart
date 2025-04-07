@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  AuthField _passwordTextField() {
+  Widget _passwordTextField() {
     return AuthField(
       hintText: 'Password',
       controller: passwordController,
@@ -109,11 +109,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  AuthField emailTextField() {
+  Widget emailTextField() {
     return AuthField(hintText: 'Email', controller: emailController);
   }
 
-  Text _signInText() {
+  Widget _signInText() {
     return const Text(
       'Sign In.',
       style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),

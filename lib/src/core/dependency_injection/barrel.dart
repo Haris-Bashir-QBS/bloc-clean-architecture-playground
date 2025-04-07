@@ -13,6 +13,7 @@ import 'package:bloc_api_integration/src/features/blogs/data/datasources/blog_re
 import 'package:bloc_api_integration/src/features/blogs/data/datasources/blog_remote_datasource_impl.dart';
 import 'package:bloc_api_integration/src/features/blogs/data/repositories/blog_repository_impl.dart';
 import 'package:bloc_api_integration/src/features/blogs/domain/repositories/blog_repository.dart';
+import 'package:bloc_api_integration/src/features/blogs/domain/usecases/delete_blog_usecase.dart';
 import 'package:bloc_api_integration/src/features/blogs/domain/usecases/upload_blog_usecase.dart';
 import 'package:bloc_api_integration/src/features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:bloc_api_integration/src/features/daily_news/data/datasources/remote/news_remote_datasource.dart';

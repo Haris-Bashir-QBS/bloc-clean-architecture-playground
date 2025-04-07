@@ -1,4 +1,5 @@
 import 'package:bloc_api_integration/src/core/use_cases/use_case.dart';
+import 'package:bloc_api_integration/src/features/blogs/domain/usecases/delete_blog_usecase.dart';
 import 'package:bloc_api_integration/src/features/blogs/domain/usecases/get_all_blogs_usecase.dart';
 import 'package:bloc_api_integration/src/features/blogs/domain/usecases/upload_blog_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,15 +13,20 @@ import 'blog_state.dart';
 class BlogBloc extends Bloc<BlogEvent, BlogState> {
   final UploadBlogUseCase _uploadBlog;
   final GetAllBlogsUseCase _getAllBlogs;
+  final DeleteBlogUsecase _deleteBlog;
 
   BlogBloc({
     required UploadBlogUseCase uploadBlog,
     required GetAllBlogsUseCase getAllBlogs,
+    required DeleteBlogUsecase deleteBlog,
   }) : _uploadBlog = uploadBlog,
        _getAllBlogs = getAllBlogs,
+       _deleteBlog = deleteBlog,
+
        super(BlogInitial()) {
     on<BlogUploadEvent>(_onBlogUpload);
     on<BlogFetchAllBlogsEvent>(_onFetchAllBlogs);
+    on<DeleteBlogEvent>(_onDeleteBlog);
   }
 
   /// =================== Get all blogs =============
@@ -45,7 +51,7 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
     emit(BlogLoading());
 
     Either<Failure, BlogEntity> blogOrFailure = await _uploadBlog(
-      UploadBlogParams(
+      BlogParams(
         posterId: event.posterId,
         title: event.title,
         content: event.content,
@@ -56,7 +62,26 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
 
     blogOrFailure.fold(
       (Failure failure) => emit(BlogFailure(failure.message)),
-      (BlogEntity blog) => emit(BlogUploadSuccess()),
+      (BlogEntity blog) {
+        emit(BlogUploadSuccess());
+        add(BlogFetchAllBlogsEvent());
+      },
+    );
+  }
+
+  // =================== Delete blog =============
+  void _onDeleteBlog(DeleteBlogEvent event, Emitter<BlogState> emit) async {
+    emit(BlogLoading());
+    Either<Failure, void> deleteOrFailure = await _deleteBlog(
+      DeleteBlogParams(blogId: event.blogId),
+    );
+
+    deleteOrFailure.fold(
+      (Failure failure) => emit(BlogFailure(failure.message)),
+      (void _) {
+        emit(BlogDeleteSuccess());
+        add(BlogFetchAllBlogsEvent());
+      },
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc_api_integration/src/features/blogs/domain/entities/blog_entity.dart';
@@ -30,9 +31,13 @@ class BlogRepositoryImpl implements BlogRepository {
     required List<String> topics,
   }) async {
     try {
-      if (!await ConnectivityService.isConnected) {
+      bool isConnected = await ConnectivityService.instance.isConnected;
+      print("internet status is $isConnected");
+      if (!isConnected) {
+        log("Here it is not connected ${isConnected}");
         return left(NetworkException());
       }
+      print("clause 1");
       BlogModel blogModel = BlogModel(
         id: const Uuid().v1(),
         posterId: posterId,
@@ -64,13 +69,55 @@ class BlogRepositoryImpl implements BlogRepository {
   @override
   Future<Either<Failure, List<BlogEntity>>> getAllBlogs() async {
     try {
-      if (!await ConnectivityService.isConnected) {
+      if (!await ConnectivityService.instance.isConnected) {
         final blogs = _blogLocalDataSource.loadBlogs();
         return right(blogs);
       }
       final blogs = await _blogRemoteDataSource.getAllBlogs();
       _blogLocalDataSource.uploadLocalBlogs(blogs: blogs);
       return right(blogs);
+    } on ServerException catch (e) {
+      return left(ServerException(message: e.message));
+    } catch (e) {
+      return left(UnknownException(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteBlog({required String blogId}) async {
+    try {
+      if (!await ConnectivityService.instance.isConnected) {
+        return left(NetworkException());
+      }
+      await _blogRemoteDataSource.deleteBlog(blogId: blogId);
+      return right(null);
+    } on ServerException catch (e) {
+      return left(ServerException(message: e.message));
+    } catch (e) {
+      return left(UnknownException(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateBlog({required BlogEntity blog}) async {
+    try {
+      if (!await ConnectivityService.instance.isConnected) {
+        return left(NetworkException());
+      }
+
+      final blogModel = BlogModel(
+        id: blog.id,
+        title: blog.title,
+        content: blog.content,
+        imageUrl: blog.imageUrl,
+        posterName: blog.posterName,
+        posterId: blog.posterId,
+        topics: blog.topics,
+        updatedAt: DateTime.now(),
+      );
+
+      await _blogRemoteDataSource.updateBlog(blog: blogModel);
+      return right(null);
     } on ServerException catch (e) {
       return left(ServerException(message: e.message));
     } catch (e) {

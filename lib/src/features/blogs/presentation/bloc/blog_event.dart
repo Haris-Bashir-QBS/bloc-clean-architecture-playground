@@ -32,3 +32,8 @@ class BlogUploadEvent extends BlogEvent {
 class BlogFetchAllBlogsEvent extends BlogEvent {
   const BlogFetchAllBlogsEvent();
 }
+
+class DeleteBlogEvent extends BlogEvent {
+  final String blogId;
+  const DeleteBlogEvent({required this.blogId});
+}

@@ -3,9 +3,11 @@ import 'package:dio/dio.dart';
 
 class ConnectivityInterceptor extends Interceptor {
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-
-    bool isInternetConnected = await  ConnectivityService.isConnected;
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    bool isInternetConnected = await ConnectivityService.instance.isConnected;
     if (!isInternetConnected) {
       handler.reject(
         DioException(

@@ -41,33 +41,37 @@ class _SignupPageState extends State<SignupPage> {
               }
             },
             builder: (BuildContext context, AuthState state) {
-              return Form(
-                key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    SizedBox(height: 80),
-                    _signupText(),
-                    SizedBox(height: 30),
-                    _nameTextField(),
-                    SizedBox(height: 15),
-                    _emailTextField(),
-                    SizedBox(height: 15),
-                    _passwordController(),
-                    SizedBox(height: 15),
-                    _confirmPasswordController(),
-                    SizedBox(height: 15),
-                    _signupButton(state),
-                    SizedBox(height: 15),
-                    _signInText(),
-                    SizedBox(height: 15),
-                  ],
-                ),
-              );
+              return _signupForm(state);
             },
           ),
         ),
+      ),
+    );
+  }
+
+  Form _signupForm(AuthState state) {
+    return Form(
+      key: formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          SizedBox(height: 80),
+          _signupText(),
+          SizedBox(height: 30),
+          _nameTextField(),
+          SizedBox(height: 15),
+          _emailTextField(),
+          SizedBox(height: 15),
+          _passwordController(),
+          SizedBox(height: 15),
+          _confirmPasswordController(),
+          SizedBox(height: 15),
+          _signupButton(state),
+          SizedBox(height: 15),
+          _signInText(),
+          SizedBox(height: 15),
+        ],
       ),
     );
   }
@@ -132,7 +136,7 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  AuthField _passwordController() {
+  Widget _passwordController() {
     return AuthField(
       hintText: "Password",
       controller: passwordController,
@@ -140,11 +144,11 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  AuthField _emailTextField() {
+  Widget _emailTextField() {
     return AuthField(hintText: "Email", controller: emailController);
   }
 
-  AuthField _nameTextField() {
+  Widget _nameTextField() {
     return AuthField(hintText: "Name", controller: nameController);
   }
 

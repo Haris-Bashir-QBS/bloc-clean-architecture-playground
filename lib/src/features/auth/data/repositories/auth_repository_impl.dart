@@ -14,7 +14,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> currentUser() async {
     try {
-      if (!await (ConnectivityService.isConnected)) {
+      if (!await (ConnectivityService.instance.isConnected)) {
         final session = remoteDataSource.currentUserSession;
 
         if (session == null) {

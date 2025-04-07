@@ -9,4 +9,6 @@ abstract class BlogRemoteDataSource {
     required File image,
   });
   Future<List<BlogModel>> getAllBlogs();
+  Future<void> deleteBlog({required String blogId});
+  Future<void> updateBlog({required BlogModel blog});
 }

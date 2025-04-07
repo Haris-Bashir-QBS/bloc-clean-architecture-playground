@@ -10,6 +10,10 @@ class BlogUploadSuccess extends BlogState {
   BlogUploadSuccess();
 }
 
+class BlogDeleteSuccess extends BlogState {
+  BlogDeleteSuccess();
+}
+
 class BlogsFetchSuccess extends BlogState {
   final List<BlogEntity> blogs;
   BlogsFetchSuccess({required this.blogs});

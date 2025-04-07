@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart' show AuthSignOutEvent;
 import '../../../auth/presentation/bloc/auth_state.dart';
-import '../widgets/dialog.dart';
+import '../../../../widgets/dialog.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
